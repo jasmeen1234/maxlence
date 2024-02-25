@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,41 +11,26 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import UserType from "./UserType"
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const defaultTheme = createTheme();
 const baseURL = "http://localhost:8000";
 
 export default function ForgetPswd() {
-  const navigate = useNavigate();
-  const [role, setRole] = useState('');
-  
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!role) {
-      alert('Please select a user type');
-      return;
-    }
-  
     const data = new FormData(event.currentTarget);
     const email = data.get('email');
     const userType = data.get('userType');
 
     try {
-      const response = await axios.post(`${baseURL}/password/reset`, { email, userType:role });
-      console.log(response.data);
+      const response = await axios.post(`${baseURL}/reset`, { email, userType });
+      console.log(response.data.message);
       alert(response.data.message);
-      navigate('/resetpwd');
     } catch (error) {
       console.error(error.message);
       alert('An error occurred while processing your request');
     }
-  };
-
-  const forgetHandler = () => {
-    // This function can be used for additional actions before form submission
-    // For now, it can be left empty
   };
 
   return (
@@ -70,7 +54,7 @@ export default function ForgetPswd() {
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={1}>
               <Grid item xs={12}>
-                <UserType role={role} setRole={setRole} />
+                <UserType />
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -88,7 +72,6 @@ export default function ForgetPswd() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={forgetHandler}
             >
               Send Code
             </Button>
